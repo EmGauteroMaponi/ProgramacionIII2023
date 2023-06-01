@@ -1,6 +1,7 @@
 package org.ejemplo.servicios;
 
 import lombok.extern.slf4j.Slf4j;
+import org.ejemplo.exceptions.UserException;
 import org.ejemplo.modelos.Login;
 import org.ejemplo.modelos.Usuario;
 import org.ejemplo.validations.UserValidations;
@@ -14,10 +15,8 @@ import java.util.List;
 public class UsersService {
     List<Usuario> usuarios = new ArrayList<>();
 
-    public String guardarUsuario(Usuario usuario){
-        if (UserValidations.validateExistUser(usuarios, usuario.getUser())){
-            return "error, el usuario ya existe";
-        }
+    public String guardarUsuario(Usuario usuario) throws UserException {
+        UserValidations.validateUserForRegister(usuarios, usuario.getUser());
         usuarios.add(usuario);
         return "usuario cargado correctamente";
     }

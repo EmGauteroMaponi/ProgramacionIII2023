@@ -1,5 +1,6 @@
 package org.ejemplo.controladores;
 
+import org.ejemplo.exceptions.UserException;
 import org.ejemplo.modelos.Login;
 import org.ejemplo.modelos.Usuario;
 import org.ejemplo.servicios.UsersService;
@@ -18,11 +19,14 @@ public class UsuarioController {
 
     @PostMapping("/registry")
     public ResponseEntity<String> createUser(@RequestBody Usuario usuario){
-        String respuesta = service.guardarUsuario(usuario);
-        if (respuesta.contains("error")){
-            return ResponseEntity.status(HttpStatus.PRECONDITION_FAILED).body(respuesta);
+        try{
+            String respuesta = service.guardarUsuario(usuario);
+            return ResponseEntity.status(HttpStatus.CREATED).body(respuesta);
+        } catch (UserException e){
+            return ResponseEntity.status(e.getStatusCode()).body(String.format("%s \n %s", e.getMessage(), e.getCausa()));
+        } catch (Exception e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Ups!!! Algo salio mal, nuestro desarrolladores estan trabajando para solucionarlo");
         }
-        return ResponseEntity.status(HttpStatus.CREATED).body(respuesta);
     }
 
     @GetMapping("/getAll")
