@@ -1,5 +1,6 @@
 package org.ejemplo.controladores;
 
+import lombok.extern.slf4j.Slf4j;
 import org.ejemplo.exceptions.UserException;
 import org.ejemplo.modelos.Login;
 import org.ejemplo.modelos.Usuario;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
+@Slf4j
 public class UsuarioController {
     public UsersService service = new UsersService();
 
@@ -21,10 +23,13 @@ public class UsuarioController {
     public ResponseEntity<String> createUser(@RequestBody Usuario usuario){
         try{
             String respuesta = service.guardarUsuario(usuario);
+            log.info("Usuario creado de forma correcta {}", usuario.getUser());
             return ResponseEntity.status(HttpStatus.CREATED).body(respuesta);
         } catch (UserException e){
+            log.warn("No se esta cumpliendo con las validaciones. Usuario a crear: {}", usuario);
             return ResponseEntity.status(e.getStatusCode()).body(String.format("%s \n %s", e.getMessage(), e.getCausa()));
         } catch (Exception e){
+            log.error("Error: ",e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Ups!!! Algo salio mal, nuestro desarrolladores estan trabajando para solucionarlo");
         }
     }
