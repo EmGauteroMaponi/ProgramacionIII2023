@@ -16,7 +16,7 @@ public class UsersService {
     List<Usuario> usuarios = new ArrayList<>();
 
     public String guardarUsuario(Usuario usuario) throws UserException {
-        UserValidations.validateUserForRegister(usuarios, usuario.getUser());
+        UserValidations.validateUserForRegister(usuarios, usuario);
         usuarios.add(usuario);
         return "usuario cargado correctamente";
     }
