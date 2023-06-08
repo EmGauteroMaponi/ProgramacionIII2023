@@ -17,10 +17,18 @@ public class UserValidations {
         return false;
     }
 
-    public static void validateUserForRegister(List<Usuario> usuarios, String username) throws UserException {
-        if(validateExistUser(usuarios, username)){
-            throw new UserException(HttpStatus.PRECONDITION_FAILED, "No se puede ingresar el usuario " + username, "El usuario ya se encuentra registrado");
+    public static void validateUserForRegister(List<Usuario> usuarios, Usuario usuario) throws UserException {
+        if (validateUserNoEmptyNoNull(usuario)){
+            throw new UserException(HttpStatus.PRECONDITION_FAILED,"Error en el campo usuario", "No se permite valor nulo");
         }
+
+        if(validateExistUser(usuarios, usuario.getUser())){
+            throw new UserException(HttpStatus.PRECONDITION_FAILED, "No se puede ingresar el usuario " + usuario.getUser(), "El usuario ya se encuentra registrado");
+        }
+    }
+
+    private static boolean validateUserNoEmptyNoNull(Usuario usuario) {
+        return usuario.getUser() == null || usuario.getUser().isBlank();
     }
 }
 
