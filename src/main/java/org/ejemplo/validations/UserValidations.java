@@ -18,7 +18,7 @@ public class UserValidations {
     }
 
     public static void validateUserForRegister(List<Usuario> usuarios, Usuario usuario) throws UserException {
-        if (validateUserNoEmptyNoNull(usuario)){
+        if (validateStringNotEmptyNotNull(usuario.getUser())){
             throw new UserException(HttpStatus.PRECONDITION_FAILED,"Error en el campo usuario", "No se permite valor nulo");
         }
 
@@ -27,8 +27,8 @@ public class UserValidations {
         }
     }
 
-    private static boolean validateUserNoEmptyNoNull(Usuario usuario) {
-        return usuario.getUser() == null || usuario.getUser().isBlank();
+    private static boolean validateStringNotEmptyNotNull(String string) {
+        return string == null || string.isBlank();
     }
 }
 
