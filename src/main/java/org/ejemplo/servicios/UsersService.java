@@ -4,33 +4,35 @@ import lombok.extern.slf4j.Slf4j;
 import org.ejemplo.exceptions.UserException;
 import org.ejemplo.modelos.Login;
 import org.ejemplo.modelos.Usuario;
+import org.ejemplo.repository.UserRepository;
 import org.ejemplo.validations.UserValidations;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
-@Service
 @Slf4j
+@Service
 public class UsersService {
-    List<Usuario> usuarios = new ArrayList<>();
+    @Autowired //Utilizamos Auytowired para hacer inyeccion de dependencias por medio de springboot
+    UserRepository userRepository;//Objeto para realizar consultas sobre la tabla usuario
 
     public String guardarUsuario(Usuario usuario) throws UserException {
-        UserValidations.validateUserForRegister(usuarios, usuario);
-        usuarios.add(usuario);
+        UserValidations.validateUserForRegister(retornarUsuarios(), usuario);
+        userRepository.guardarUsuario(usuario);
         return "usuario cargado correctamente";
     }
 
     public List<Usuario> retornarUsuarios(){
-        return usuarios;
+        return userRepository.getAll();
     }
 
-    public void borrarUsuarios(String user){
-        if (UserValidations.validateExistUser(usuarios, user)){
-            Usuario usuarioABorrar = getUser(user);
-            usuarios.remove(usuarioABorrar);
+    public void borrarUsuarios(String user) throws Exception {
+        if (!UserValidations.validateExistUser(retornarUsuarios(), user)){
+            throw new UserException(HttpStatus.PRECONDITION_FAILED, "No se puede eliminar el usuario", String.format("El usuario %s no está registrado", user));
         }
-        log.warn("El usuario %s no existe y no lo podemos borrar", user);
+        userRepository.removeUser(user);
     }
 
     public String login(Login login){
@@ -48,7 +50,7 @@ public class UsersService {
 
 
     private Usuario getUser(String userName){
-        for (Usuario usuario: usuarios){
+        for (Usuario usuario: retornarUsuarios()){
             if (usuario.getUser().equals(userName)){
                 return usuario;
             }
