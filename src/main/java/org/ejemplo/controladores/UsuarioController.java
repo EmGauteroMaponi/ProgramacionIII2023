@@ -5,6 +5,7 @@ import org.ejemplo.exceptions.UserException;
 import org.ejemplo.modelos.Login;
 import org.ejemplo.modelos.Usuario;
 import org.ejemplo.servicios.UsersService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,7 +18,8 @@ import java.util.List;
 @RestController
 @Slf4j
 public class UsuarioController {
-    public UsersService service = new UsersService();
+    @Autowired
+    public UsersService service;
 
     @PostMapping("/registry")
     public ResponseEntity<String> createUser(@RequestBody Usuario usuario){
