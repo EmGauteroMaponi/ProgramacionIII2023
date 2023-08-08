@@ -21,7 +21,7 @@ public class UsuarioController {
     @Autowired
     public UsersService service;
 
-    @PostMapping("/registry")
+    @PostMapping("/usuario/registry")
     public ResponseEntity<String> createUser(@RequestBody Usuario usuario){
         try{
             String respuesta = service.guardarUsuario(usuario);
@@ -36,12 +36,12 @@ public class UsuarioController {
         }
     }
 
-    @GetMapping("/getAll")
+    @GetMapping("/usuario/getAll")
     public ResponseEntity<List<Usuario>> getAll(){
         return ResponseEntity.ok(service.retornarUsuarios());
     }
 
-    @PostMapping("/login")
+    @PostMapping("/usuario/login")
     public ResponseEntity<String> login(@RequestBody Login login) {
         String respuesta = service.login(login);
         if (respuesta.contains("Error")){
