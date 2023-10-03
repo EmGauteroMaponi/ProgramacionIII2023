@@ -25,6 +25,12 @@ public class UserValidations {
         if(validateExistUser(usuarios, usuario.getUser())){
             throw new UserException(HttpStatus.PRECONDITION_FAILED, "No se puede ingresar el usuario " + usuario.getUser(), "El usuario ya se encuentra registrado");
         }
+
+        if (validateStringNotEmptyNotNull(usuario.getRole())
+        || (!usuario.getRole().equalsIgnoreCase("administrador")
+        && !usuario.getRole().equalsIgnoreCase("vendedor"))){
+            throw new UserException(HttpStatus.PRECONDITION_FAILED, "No se puede ingresar el usuario " + usuario.getUser(), "Porque el rol es incorrecto");
+        }
     }
 
     private static boolean validateStringNotEmptyNotNull(String string) {

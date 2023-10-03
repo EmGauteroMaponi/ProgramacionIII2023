@@ -6,11 +6,11 @@ import org.springframework.http.HttpStatus;
 
 @Getter
 @Setter
-public class UserException extends Exception {
+public class ClientException extends Exception {
     private HttpStatus statusCode;
     private String causa;
 
-    public UserException(HttpStatus status, String message, String cause) {
+    public ClientException(HttpStatus status, String message, String cause) {
         super(message);
         this.causa = cause;
         this.statusCode = status;
