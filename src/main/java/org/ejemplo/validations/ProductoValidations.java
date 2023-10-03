@@ -8,6 +8,8 @@ import org.springframework.http.HttpStatus;
 
 import java.util.List;
 
+import static org.ejemplo.utils.Utils.validateStringNotEmptyAndNotNull;
+
 public class ProductoValidations {
     public static Boolean validateExistProduct(List<Producto> productos, String codigo){
         for(Producto producto: productos){
@@ -19,10 +21,10 @@ public class ProductoValidations {
     }
 
     public static void validateProductoForCreate(List<Producto> productos, Producto producto) throws ProductoException {
-        if (validateStringNotEmptyNotNull(producto.getCodigo())){
+        if (validateStringNotEmptyAndNotNull(producto.getCodigo())){
             throw new ProductoException(HttpStatus.PRECONDITION_FAILED,"Error en el campo Codigo", "Es el identificador del producto, no puede ser nulo");
         }
-        if (validateStringNotEmptyNotNull(producto.getNombre())){
+        if (validateStringNotEmptyAndNotNull(producto.getNombre())){
             throw new ProductoException(HttpStatus.PRECONDITION_FAILED,"Error en el campo Nombre", "No se permite valor nulo");
         }
         if (producto.getPrecio()<0){
@@ -37,10 +39,10 @@ public class ProductoValidations {
         if(!validateExistProduct(productos, producto.getCodigo())){
             throw new ProductoException(HttpStatus.PRECONDITION_FAILED, "No se puede actualizar el producto " + producto.getCodigo(), "El producto no se encuentra registrado");
         }
-        if (validateStringNotEmptyNotNull(producto.getCodigo())){
+        if (validateStringNotEmptyAndNotNull(producto.getCodigo())){
             throw new ProductoException(HttpStatus.PRECONDITION_FAILED,"Error en el campo Codigo", "Es el identificador del producto, no puede ser nulo");
         }
-        if (validateStringNotEmptyNotNull(producto.getNombre())){
+        if (validateStringNotEmptyAndNotNull(producto.getNombre())){
             throw new ProductoException(HttpStatus.PRECONDITION_FAILED,"Error en el campo Nombre", "No se permite valor nulo");
         }
         if (producto.getPrecio()<0){
@@ -54,10 +56,5 @@ public class ProductoValidations {
         }
     }
 
-
-
-    private static boolean validateStringNotEmptyNotNull(String string) {
-        return string == null || string.isBlank();
-    }
 }
 

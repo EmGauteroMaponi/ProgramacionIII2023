@@ -18,7 +18,7 @@ public class ProductoController {
     public ProductoService service;
 
     @PostMapping("/producto/create")
-    public ResponseEntity<String> createProducto(@RequestBody Producto producto){
+    public ResponseEntity<String> createProducto(@RequestHeader String token, @RequestBody Producto producto){
         try{
             String respuesta = service.guardarProducto (producto);
             log.info("Producto creado de forma correcta {}", producto.getCodigo());

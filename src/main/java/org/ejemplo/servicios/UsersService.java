@@ -2,11 +2,13 @@ package org.ejemplo.servicios;
 
 import lombok.extern.slf4j.Slf4j;
 import org.ejemplo.exceptions.UserException;
+import org.ejemplo.modelos.Log;
 import org.ejemplo.modelos.Login;
 import org.ejemplo.modelos.Usuario;
 import org.ejemplo.repository.UsuarioRepository;
 import org.ejemplo.validations.UserValidations;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -19,6 +21,8 @@ public class UsersService {
     List<Usuario> usuarios = new ArrayList<>();
     @Autowired
     UsuarioRepository usuarioRepository;
+    @Autowired
+    AutenticationService autenticationService;
 
     public String guardarUsuario(Usuario usuario) throws UserException {
         UserValidations.validateUserForRegister(usuarios, usuario);
@@ -37,15 +41,15 @@ public class UsersService {
         log.warn("El usuario %s no existe y no lo podemos borrar", user);
     }
 
-    public String login(Login login){
+    public Log login(Login login) throws UserException {
         Optional<Usuario> optionalUsuario = usuarioRepository.findById(login.getUser());
         if (optionalUsuario.isPresent()){
             Usuario usuario = optionalUsuario.get();
             if (usuario.getPassword().equals(login.getPassword())){
-                return usuario.getRole();
+                return autenticationService.createToken(usuario);
             }
         }
-        return String.format("Error, Tus datos de inicio de session son invalidos", login.getUser());
+        throw new UserException(HttpStatus.UNAUTHORIZED,"Login fallido", "Tus datos de inicio de session son invalidos");
     }
 
 

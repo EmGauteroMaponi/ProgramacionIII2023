@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatusCode;
 
 import java.util.List;
 
+import static org.ejemplo.utils.Utils.validateStringNotEmptyAndNotNull;
 public class UserValidations {
     public static Boolean validateExistUser(List<Usuario> usuarios, String username){
         for(Usuario user: usuarios){
@@ -18,7 +19,7 @@ public class UserValidations {
     }
 
     public static void validateUserForRegister(List<Usuario> usuarios, Usuario usuario) throws UserException {
-        if (validateStringNotEmptyNotNull(usuario.getUser())){
+        if (validateStringNotEmptyAndNotNull(usuario.getUser())){
             throw new UserException(HttpStatus.PRECONDITION_FAILED,"Error en el campo usuario", "No se permite valor nulo");
         }
 
@@ -26,15 +27,11 @@ public class UserValidations {
             throw new UserException(HttpStatus.PRECONDITION_FAILED, "No se puede ingresar el usuario " + usuario.getUser(), "El usuario ya se encuentra registrado");
         }
 
-        if (validateStringNotEmptyNotNull(usuario.getRole())
+        if (validateStringNotEmptyAndNotNull(usuario.getRole())
         || (!usuario.getRole().equalsIgnoreCase("administrador")
         && !usuario.getRole().equalsIgnoreCase("vendedor"))){
             throw new UserException(HttpStatus.PRECONDITION_FAILED, "No se puede ingresar el usuario " + usuario.getUser(), "Porque el rol es incorrecto");
         }
-    }
-
-    private static boolean validateStringNotEmptyNotNull(String string) {
-        return string == null || string.isBlank();
     }
 }
 
