@@ -30,7 +30,7 @@ public class AutenticationService {
         return new Log(usuario.getRole(), autentication.getToken());
     }
 
-    public void validarToken(String token) throws AuthenticationException {
+    public Autentication validarToken(String token) throws AuthenticationException {
         Optional<Autentication> optionalAutentication = repository.findByToken(token);
         if (optionalAutentication.isEmpty()){
             throw new AuthenticationException("El token no existe");
@@ -41,6 +41,7 @@ public class AutenticationService {
         }
         autentication.setVencimiento(getVencimiento());
         repository.save(autentication);
+        return autentication;
     }
 
 
@@ -48,7 +49,7 @@ public class AutenticationService {
     private Date getVencimiento(){
         Calendar c = Calendar.getInstance();
         c.setTime(new Date());
-        c.add(Calendar.MINUTE, 15);
+        c.add(Calendar.MINUTE, 1);
         return c.getTime();
     }
 }

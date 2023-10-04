@@ -40,12 +40,12 @@ public class UsuarioController {
     }
 
     @GetMapping("/usuario/getAll")
-    public ResponseEntity<List<Usuario>> getAll(@RequestHeader String token){
+    public ResponseEntity<?> getAll(@RequestHeader String token){
         try {
             autenticationService.validarToken(token);
             return ResponseEntity.ok(service.retornarUsuarios());
         } catch (AuthenticationException e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
         }
     }
 
