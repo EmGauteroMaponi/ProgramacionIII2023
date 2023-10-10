@@ -2,35 +2,49 @@ package org.ejemplo.validations;
 
 import org.ejemplo.exceptions.UserException;
 import org.ejemplo.modelos.Usuario;
+import org.ejemplo.utils.Utils;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 
 import java.util.List;
 
-import static org.ejemplo.utils.Utils.validateStringNotEmptyAndNotNull;
-public class UserValidations {
-    public static Boolean validateExistUser(List<Usuario> usuarios, String username){
-        for(Usuario user: usuarios){
-            if (user.getUser().equals(username)){
-                return true;
-            }
-        }
-        return false;
+public class UserValidations implements ValidationsInterface<Usuario, String, Object>{
+
+    @Override
+    public void validateToCreate(List<Usuario> usuarios,Usuario usuario, Object object) throws UserException {
+        validateUserName(usuario.getUser());
+        validateUserDoesNotExist(usuarios, usuario.getUser());
+        validateUserRole(usuario.getRole());
     }
 
-    public static void validateUserForRegister(List<Usuario> usuarios, Usuario usuario) throws UserException {
-        if (validateStringNotEmptyAndNotNull(usuario.getUser())){
+    private void validateUserRole(String role) throws UserException {
+        if (Utils.validateStringNotEmptyAndNotNull(role)
+                || (!role.equalsIgnoreCase("administrador")
+                && !role.equalsIgnoreCase("vendedor"))){
+            throw new UserException(HttpStatus.PRECONDITION_FAILED, "No se puede ingresar el usuario " + role, "Porque el rol es incorrecto");
+        }
+    }
+
+    @Override
+    public void validateToUpdate() {
+        throw new RuntimeException("Estamos utilizando un método para el cual no hay una implementación");
+    }
+
+    @Override
+    public void validateToDelete(List<Usuario> usuarios, String user) throws UserException{
+        if (!Utils.validateStringNotEmptyAndNotNull(user)){
+            throw new UserException(HttpStatus.PRECONDITION_FAILED,"No se puede eliminar el usuario", "El usuario no está registrado en nuestra base de datos");
+        }
+    }
+
+    private void validateUserName(String user) throws UserException {
+        if (Utils.validateStringNotEmptyAndNotNull(user)){
             throw new UserException(HttpStatus.PRECONDITION_FAILED,"Error en el campo usuario", "No se permite valor nulo");
         }
+    }
 
-        if(validateExistUser(usuarios, usuario.getUser())){
-            throw new UserException(HttpStatus.PRECONDITION_FAILED, "No se puede ingresar el usuario " + usuario.getUser(), "El usuario ya se encuentra registrado");
-        }
-
-        if (validateStringNotEmptyAndNotNull(usuario.getRole())
-        || (!usuario.getRole().equalsIgnoreCase("administrador")
-        && !usuario.getRole().equalsIgnoreCase("vendedor"))){
-            throw new UserException(HttpStatus.PRECONDITION_FAILED, "No se puede ingresar el usuario " + usuario.getUser(), "Porque el rol es incorrecto");
+    private void validateUserDoesNotExist(List<Usuario> usuarios, String user) throws UserException {
+        if(Utils.exists(usuarios, u -> u.getUser().equals(user))){
+            throw new UserException(HttpStatus.PRECONDITION_FAILED, "No se puede ingresar el usuario " + user, "El usuario ya se encuentra registrado");
         }
     }
 }
