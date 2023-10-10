@@ -1,18 +1,19 @@
 package org.ejemplo.controladores;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.el.parser.Token;
 import org.ejemplo.exceptions.UserException;
+import org.ejemplo.modelos.Log;
 import org.ejemplo.modelos.Login;
 import org.ejemplo.modelos.Usuario;
+import org.ejemplo.servicios.AutenticationService;
 import org.ejemplo.servicios.UsersService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import javax.naming.AuthenticationException;
 import java.util.List;
 
 @RestController
@@ -20,6 +21,8 @@ import java.util.List;
 public class UsuarioController {
     @Autowired
     public UsersService service;
+    @Autowired
+    public AutenticationService autenticationService;
 
     @PostMapping("/usuario/registry")
     public ResponseEntity<String> createUser(@RequestBody Usuario usuario){
@@ -37,16 +40,21 @@ public class UsuarioController {
     }
 
     @GetMapping("/usuario/getAll")
-    public ResponseEntity<List<Usuario>> getAll(){
-        return ResponseEntity.ok(service.retornarUsuarios());
+    public ResponseEntity<?> getAll(@RequestHeader String token){
+        try {
+            autenticationService.validarToken(token);
+            return ResponseEntity.ok(service.retornarUsuarios());
+        } catch (AuthenticationException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
+        }
     }
 
     @PostMapping("/usuario/login")
-    public ResponseEntity<String> login(@RequestBody Login login) {
-        String respuesta = service.login(login);
-        if (respuesta.contains("Error")){
-            return ResponseEntity.status(HttpStatus.PRECONDITION_FAILED).body(respuesta);
+    public ResponseEntity<Log> login(@RequestBody Login login) {
+        try {
+            return ResponseEntity.ok(service.login(login));
+        } catch (UserException e) {
+            return ResponseEntity.status(e.getStatusCode()).body(null);
         }
-        return ResponseEntity.ok(respuesta);
     }
 }
