@@ -14,8 +14,10 @@ import java.util.List;
 @Service
 @Slf4j
 public class ClienteService {
-    @Autowired
-    ClienteRepository repository;
+    private ClienteRepository repository;
+    public ClienteService(ClienteRepository repository){
+        this.repository = repository;
+    }
 
     public String guardarCliente(Cliente cliente) throws ClientException {
         ClienteValidations.validateUserForRegister(repository.findAll(), cliente);
