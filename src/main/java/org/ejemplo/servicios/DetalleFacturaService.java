@@ -8,6 +8,7 @@ import org.ejemplo.repository.DetalleFacturaRepository;
 import org.ejemplo.repository.ProductoRepository;
 import org.ejemplo.validations.DetalleFacturaValidations;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mapping.KPropertyPathExtensionsKt;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,11 +17,14 @@ import java.util.Optional;
 @Service
 @Slf4j
 public class DetalleFacturaService {
-    @Autowired
     DetalleFacturaRepository detalleFacturaRepository;
 
-    @Autowired
     ProductoRepository productoRepository;
+
+    DetalleFacturaService(DetalleFacturaRepository detalleFacturaRepository, ProductoRepository productoRepository){
+        this.detalleFacturaRepository = detalleFacturaRepository;
+        this.productoRepository = productoRepository;
+    }
     public String guardar(DetalleFactura detalleFactura) throws ClientException {
         DetalleFacturaValidations.validateForCreate(productoRepository,detalleFacturaRepository.findAll(), detalleFactura);
 
