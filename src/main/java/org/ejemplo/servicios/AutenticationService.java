@@ -1,7 +1,7 @@
 package org.ejemplo.servicios;
 
 import org.ejemplo.modelos.Autentication;
-import org.ejemplo.modelos.Log;
+import org.ejemplo.modelos.dtos.LogDTO;
 import org.ejemplo.modelos.Usuario;
 import org.ejemplo.repository.AutenticationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +18,7 @@ public class AutenticationService {
 
     @Autowired
     private AutenticationRepository repository;
-    public Log createToken(Usuario usuario){
+    public LogDTO createToken(Usuario usuario){
         if (repository.existsById(usuario.getUser())){
             repository.deleteById(usuario.getUser());
         }
@@ -27,7 +27,7 @@ public class AutenticationService {
         autentication.setToken(usuario.getUser() + UUID.randomUUID());
         autentication.setVencimiento(getVencimiento());
         repository.save(autentication);
-        return new Log(usuario.getRole(), autentication.getToken());
+        return new LogDTO(usuario.getRole(), autentication.getToken());
     }
 
     public Autentication validarToken(String token) throws AuthenticationException {

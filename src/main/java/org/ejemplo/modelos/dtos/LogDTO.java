@@ -1,11 +1,11 @@
-package org.ejemplo.modelos;
+package org.ejemplo.modelos.dtos;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class Log {
+public class LogDTO {
     String rol;
     String token;
 }

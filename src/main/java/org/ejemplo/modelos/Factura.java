@@ -3,6 +3,7 @@ package org.ejemplo.modelos;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -14,10 +15,11 @@ public class Factura {
 
     private String nro1;
     private String nro2;
-    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @OneToOne(fetch = FetchType.EAGER)
     private Cliente comprador;
-    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @OneToOne(fetch = FetchType.EAGER)
     private Usuario vendedor;
+    private Date fecha;
 
     @OneToMany
     @JoinTable(

@@ -3,7 +3,7 @@ package org.ejemplo.servicios;
 import lombok.extern.slf4j.Slf4j;
 import org.ejemplo.exceptions.UserException;
 import org.ejemplo.exceptions.ValidationException;
-import org.ejemplo.modelos.Log;
+import org.ejemplo.modelos.dtos.LogDTO;
 import org.ejemplo.modelos.Login;
 import org.ejemplo.modelos.Usuario;
 import org.ejemplo.repository.UsuarioRepository;
@@ -40,7 +40,7 @@ public class UsersService {
         usuarioRepository.deleteById(user);
     }
 
-    public Log login(Login login) throws UserException {
+    public LogDTO login(Login login) throws UserException {
         Optional<Usuario> optionalUsuario = usuarioRepository.findById(login.getUser());
         if (optionalUsuario.isPresent()){
             Usuario usuario = optionalUsuario.get();

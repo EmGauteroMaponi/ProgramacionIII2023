@@ -1,9 +1,8 @@
 package org.ejemplo.controladores;
 
 import lombok.extern.slf4j.Slf4j;
-import org.apache.el.parser.Token;
 import org.ejemplo.exceptions.UserException;
-import org.ejemplo.modelos.Log;
+import org.ejemplo.modelos.dtos.LogDTO;
 import org.ejemplo.modelos.Login;
 import org.ejemplo.modelos.Usuario;
 import org.ejemplo.servicios.AutenticationService;
@@ -14,7 +13,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.naming.AuthenticationException;
-import java.util.List;
 
 @RestController
 @Slf4j
@@ -50,7 +48,7 @@ public class UsuarioController {
     }
 
     @PostMapping("/usuario/login")
-    public ResponseEntity<Log> login(@RequestBody Login login) {
+    public ResponseEntity<LogDTO> login(@RequestBody Login login) {
         try {
             return ResponseEntity.ok(service.login(login));
         } catch (UserException e) {
