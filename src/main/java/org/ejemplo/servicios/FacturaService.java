@@ -27,8 +27,9 @@ public class FacturaService {
     @Autowired
     private ClienteService clienteService;
 
-    public String guardar(Factura factura) throws ValidationException {
+    public String guardar(String user, Factura factura) throws ValidationException {
         Map<String, List> additionalData = new HashMap<>();
+        factura.setVendedor(usersService.findByUser(user).orElse(null));
         additionalData.put("clientes", clienteService.retornarUsuarios());
         additionalData.put("usuarios", usersService.retornarUsuarios());
         validations.validateToCreate(facturaRepository.findAll(), factura, additionalData);

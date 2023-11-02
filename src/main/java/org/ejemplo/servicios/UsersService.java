@@ -40,6 +40,10 @@ public class UsersService {
         usuarioRepository.deleteById(user);
     }
 
+    public Optional<Usuario> findByUser(String user){
+        return usuarioRepository.findById(user);
+    }
+
     public LogDTO login(Login login) throws UserException {
         Optional<Usuario> optionalUsuario = usuarioRepository.findById(login.getUser());
         if (optionalUsuario.isPresent()){

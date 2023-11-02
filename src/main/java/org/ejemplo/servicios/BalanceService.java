@@ -34,7 +34,7 @@ public class BalanceService {
         String nombre = "from:".concat(desde.toString())
                 .concat(" to:")
                 .concat(hasta.toString())
-                .concat(" from:")
+                .concat(" user:")
                 .concat(usuario.getUser()).concat(". Date:")
                 .concat(new Date().toString());
         Balance balance = new Balance();

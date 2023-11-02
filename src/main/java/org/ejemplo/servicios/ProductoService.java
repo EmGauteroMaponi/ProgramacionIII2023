@@ -43,6 +43,10 @@ public class ProductoService {
         productoRepository.deleteById(codigo);
     }
 
+    public Producto findProducto(String codigo) {
+        return productoRepository.findById(codigo).orElse(null);
+    }
+
 
     private String saveProduct(Producto producto) {
         producto.setFechaDeActualizacion(new Date());

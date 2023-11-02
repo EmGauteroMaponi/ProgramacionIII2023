@@ -49,7 +49,7 @@ public class AutenticationService {
     private Date getVencimiento(){
         Calendar c = Calendar.getInstance();
         c.setTime(new Date());
-        c.add(Calendar.MINUTE, 1);
+        c.add(Calendar.MINUTE, 15);
         return c.getTime();
     }
 }

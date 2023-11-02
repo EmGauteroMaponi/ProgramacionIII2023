@@ -22,9 +22,9 @@ public class DetalleFacturaController {
     public DetalleFacturaService service;
 
     @PostMapping("/detalleFactura/create")
-    public ResponseEntity<String> createProducto(@RequestBody DetalleFactura detalleFactura){
+    public ResponseEntity<?> createProducto(@RequestBody DetalleFactura detalleFactura){
         try{
-            String respuesta = service.guardar (detalleFactura);
+            DetalleFactura respuesta = service.guardar (detalleFactura);
             log.info("Producto creado de forma correcta {}", detalleFactura.getId());
             return ResponseEntity.status(HttpStatus.CREATED).body(respuesta);
         } catch (ClientException e){
@@ -42,9 +42,9 @@ public class DetalleFacturaController {
     }
 
     @PostMapping("/detalleFactura/update")
-    public ResponseEntity<String> updateProducto(@RequestBody DetalleFactura detalleFactura){
+    public ResponseEntity<?> updateProducto(@RequestBody DetalleFactura detalleFactura){
         try{
-            String respuesta = service.actualizar (detalleFactura);
+            DetalleFactura respuesta = service.actualizar (detalleFactura);
             log.info("Producto creado de forma correcta {}", detalleFactura.getId());
             return ResponseEntity.status(HttpStatus.OK).body(respuesta);
         } catch (ClientException e){
