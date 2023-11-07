@@ -2,6 +2,7 @@ package org.ejemplo.servicios;
 
 import lombok.extern.slf4j.Slf4j;
 import org.ejemplo.exceptions.ClientException;
+import org.ejemplo.exceptions.DetalleFacturaException;
 import org.ejemplo.modelos.DetalleFactura;
 import org.ejemplo.modelos.Producto;
 import org.ejemplo.repository.DetalleFacturaRepository;
@@ -25,14 +26,14 @@ public class DetalleFacturaService {
         this.detalleFacturaRepository = detalleFacturaRepository;
         this.productoRepository = productoRepository;
     }
-    public DetalleFactura guardar(DetalleFactura detalleFactura) throws ClientException {
+    public DetalleFactura guardar(DetalleFactura detalleFactura) throws DetalleFacturaException {
         DetalleFacturaValidations.validateForCreate(productoRepository,detalleFacturaRepository.findAll(), detalleFactura);
 
         return saveDetalle(detalleFactura);
     }
 
 
-    public DetalleFactura actualizar(DetalleFactura detalleFactura) throws ClientException {
+    public DetalleFactura actualizar(DetalleFactura detalleFactura) throws DetalleFacturaException {
         DetalleFacturaValidations.validateForUpdate(productoRepository, detalleFacturaRepository.findAll(), detalleFactura);
         return saveDetalle(detalleFactura);
     }

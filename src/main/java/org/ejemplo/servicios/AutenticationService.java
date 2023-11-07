@@ -27,7 +27,7 @@ public class AutenticationService {
         autentication.setToken(usuario.getUser() + UUID.randomUUID());
         autentication.setVencimiento(getVencimiento());
         repository.save(autentication);
-        return new LogDTO(usuario.getRole(), autentication.getToken());
+        return new LogDTO(usuario.getUser(), usuario.getRole(), autentication.getToken());
     }
 
     public Autentication validarToken(String token) throws AuthenticationException {

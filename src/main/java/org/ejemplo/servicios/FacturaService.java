@@ -1,7 +1,9 @@
 package org.ejemplo.servicios;
 
 import lombok.extern.slf4j.Slf4j;
+import org.ejemplo.exceptions.DetalleFacturaException;
 import org.ejemplo.exceptions.ValidationException;
+import org.ejemplo.modelos.DetalleFactura;
 import org.ejemplo.modelos.Factura;
 import org.ejemplo.repository.FacturaRepository;
 import org.ejemplo.validations.FacturaValidations;
@@ -27,12 +29,28 @@ public class FacturaService {
     @Autowired
     private ClienteService clienteService;
 
+    @Autowired
+    private DetalleFacturaService detalleFacturaService;
+
     public String guardar(String user, Factura factura) throws ValidationException {
         Map<String, List> additionalData = new HashMap<>();
         factura.setVendedor(usersService.findByUser(user).orElse(null));
         additionalData.put("clientes", clienteService.retornarUsuarios());
         additionalData.put("usuarios", usersService.retornarUsuarios());
         validations.validateToCreate(facturaRepository.findAll(), factura, additionalData);
+        facturaRepository.save(factura);
+        return "ok";
+    }
+
+    public String guardarFacturaCompleta(String user, Factura factura) throws ValidationException {
+        Map<String, List> additionalData = new HashMap<>();
+        factura.setVendedor(usersService.findByUser(user).orElse(null));
+        additionalData.put("clientes", clienteService.retornarUsuarios());
+        additionalData.put("usuarios", usersService.retornarUsuarios());
+        validations.validateToCreate(facturaRepository.findAll(), factura, additionalData);
+        for (DetalleFactura detalle: factura.getDetalles()){
+            detalleFacturaService.guardar(detalle);
+        }
         facturaRepository.save(factura);
         return "ok";
     }

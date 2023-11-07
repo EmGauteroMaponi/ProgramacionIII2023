@@ -1,6 +1,7 @@
 package org.ejemplo.controladores;
 
 import lombok.extern.slf4j.Slf4j;
+import org.ejemplo.exceptions.DetalleFacturaException;
 import org.ejemplo.exceptions.FacturaException;
 import org.ejemplo.modelos.Autentication;
 import org.ejemplo.modelos.Factura;
@@ -33,6 +34,23 @@ public class FacturaController {
         } catch (AuthenticationException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
         } catch (FacturaException e){
+            return ResponseEntity.status(e.getStatusCode()).body(String.format("%s \n %s", e.getMessage(), e.getCausa()));
+        } catch (Exception e){
+            log.error("Error: ",e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Ups!!! Algo salio mal, nuestro desarrolladores estan trabajando para solucionarlo");
+        }
+    }
+
+    @PostMapping("/factura/createComplete")
+    public ResponseEntity<String> createComplete (@RequestHeader String token, @RequestBody Factura factura){
+        try{
+            Autentication autentication = autenticationService.validarToken(token);
+            String respuesta = service.guardarFacturaCompleta(autentication.getUser(), factura);
+            log.info("Producto creado de forma correcta {}", factura);
+            return ResponseEntity.status(HttpStatus.CREATED).body(respuesta);
+        } catch (AuthenticationException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
+        } catch (FacturaException | DetalleFacturaException e){
             return ResponseEntity.status(e.getStatusCode()).body(String.format("%s \n %s", e.getMessage(), e.getCausa()));
         } catch (Exception e){
             log.error("Error: ",e);

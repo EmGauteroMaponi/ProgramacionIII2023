@@ -1,13 +1,9 @@
 package org.ejemplo.controladores;
 
 import lombok.extern.slf4j.Slf4j;
-import org.ejemplo.exceptions.ClientException;
-import org.ejemplo.exceptions.ProductoException;
+import org.ejemplo.exceptions.DetalleFacturaException;
 import org.ejemplo.modelos.DetalleFactura;
-import org.ejemplo.modelos.Factura;
-import org.ejemplo.modelos.Producto;
 import org.ejemplo.servicios.DetalleFacturaService;
-import org.ejemplo.servicios.ProductoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,7 +23,7 @@ public class DetalleFacturaController {
             DetalleFactura respuesta = service.guardar (detalleFactura);
             log.info("Producto creado de forma correcta {}", detalleFactura.getId());
             return ResponseEntity.status(HttpStatus.CREATED).body(respuesta);
-        } catch (ClientException e){
+        } catch (DetalleFacturaException e){
             log.warn("No se esta cumpliendo con las validaciones. Cliente a crear: {}", detalleFactura);
             return ResponseEntity.status(e.getStatusCode()).body(String.format("%s \n %s", e.getMessage(), e.getCausa()));
         } catch (Exception e){
@@ -47,7 +43,7 @@ public class DetalleFacturaController {
             DetalleFactura respuesta = service.actualizar (detalleFactura);
             log.info("Producto creado de forma correcta {}", detalleFactura.getId());
             return ResponseEntity.status(HttpStatus.OK).body(respuesta);
-        } catch (ClientException e){
+        } catch (DetalleFacturaException e){
             log.warn("No se esta cumpliendo con las validaciones. Producto a crear: {}", detalleFactura);
             return ResponseEntity.status(e.getStatusCode()).body(String.format("%s \n %s", e.getMessage(), e.getCausa()));
         } catch (Exception e){
