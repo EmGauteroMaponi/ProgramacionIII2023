@@ -14,7 +14,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Service
-public class AutenticationService {
+public class AuthenticationService {
 
     @Autowired
     private AutenticationRepository repository;
@@ -42,6 +42,15 @@ public class AutenticationService {
         autentication.setVencimiento(getVencimiento());
         repository.save(autentication);
         return autentication;
+    }
+
+    public void eliminarToken(String token) throws AuthenticationException {
+        Optional<Autentication> optionalAutentication = repository.findByToken(token);
+        if (optionalAutentication.isEmpty()){
+            throw new AuthenticationException("El token no existe");
+        }
+        Autentication autentication = optionalAutentication.get();
+        repository.deleteById(autentication.getUser());
     }
 
 

@@ -49,7 +49,6 @@ public class Init {
 
     @PostConstruct
     public void inicializarProyecto() throws ValidationException {
-        log.info("Estamos bien, esto se ejecuta una vez levantado el proyecto.");
         crearUsuarios();
         crearClientes();
         crearProductos();

@@ -3,7 +3,7 @@ package org.ejemplo.controladores;
 import lombok.extern.slf4j.Slf4j;
 import org.ejemplo.exceptions.ClientException;
 import org.ejemplo.modelos.Cliente;
-import org.ejemplo.servicios.AutenticationService;
+import org.ejemplo.servicios.AuthenticationService;
 import org.ejemplo.servicios.ClienteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -11,20 +11,19 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.naming.AuthenticationException;
-import java.util.List;
 
 @RestController
 @Slf4j
 public class ClienteController {
     @Autowired
-    private AutenticationService autenticationService;
+    private AuthenticationService authenticationService;
     @Autowired
     public ClienteService service;
 
     @PostMapping("/cliente/registry")
     public ResponseEntity<String> createUser(@RequestHeader String token, @RequestBody Cliente cliente){
         try{
-            autenticationService.validarToken(token);
+            authenticationService.validarToken(token);
             String respuesta = service.guardarCliente(cliente);
             log.info("Usuario creado de forma correcta {}", cliente);
             return ResponseEntity.status(HttpStatus.CREATED).body(respuesta);
@@ -42,7 +41,7 @@ public class ClienteController {
     @GetMapping("/cliente/getAll")
     public ResponseEntity<?> getAll(@RequestHeader String token){
         try {
-            autenticationService.validarToken(token);
+            authenticationService.validarToken(token);
             return ResponseEntity.ok(service.retornarUsuarios());
         } catch (AuthenticationException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
@@ -51,7 +50,7 @@ public class ClienteController {
     @GetMapping("/cliente/findById/{id}")
     public ResponseEntity<?> getAll(@RequestHeader String token,@PathVariable(value = "id") Integer id){
         try {
-            autenticationService.validarToken(token);
+            authenticationService.validarToken(token);
             return ResponseEntity.ok(service.findById(id));
         } catch (AuthenticationException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
@@ -61,7 +60,7 @@ public class ClienteController {
     @DeleteMapping("/cliente/{id}")
     public ResponseEntity<String> delete(@RequestHeader String token,@PathVariable(value = "id") Integer id){
         try {
-            autenticationService.validarToken(token);
+            authenticationService.validarToken(token);
             service.borrarUsuarios(id);
             return ResponseEntity.status(HttpStatus.OK).build();
         } catch (AuthenticationException e) {

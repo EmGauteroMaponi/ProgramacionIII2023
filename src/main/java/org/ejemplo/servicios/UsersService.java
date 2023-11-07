@@ -23,7 +23,7 @@ public class UsersService {
     @Autowired
     UsuarioRepository usuarioRepository;
     @Autowired
-    AutenticationService autenticationService;
+    AuthenticationService authenticationService;
 
     public String guardarUsuario(Usuario usuario) throws ValidationException {
         validations.validateToCreate(retornarUsuarios(), usuario, null);
@@ -49,7 +49,7 @@ public class UsersService {
         if (optionalUsuario.isPresent()){
             Usuario usuario = optionalUsuario.get();
             if (usuario.getPassword().equals(login.getPassword())){
-                return autenticationService.createToken(usuario);
+                return authenticationService.createToken(usuario);
             }
         }
         throw new UserException(HttpStatus.UNAUTHORIZED,"Login fallido", "Tus datos de inicio de session son invalidos");

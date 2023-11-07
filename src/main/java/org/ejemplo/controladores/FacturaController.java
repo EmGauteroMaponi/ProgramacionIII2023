@@ -12,13 +12,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.naming.AuthenticationException;
-import java.util.List;
 
 @RestController
 @Slf4j
 public class FacturaController {
     @Autowired
-    private AutenticationService autenticationService;
+    private AuthenticationService authenticationService;
 
     @Autowired
     public FacturaService service;
@@ -27,7 +26,7 @@ public class FacturaController {
     @PostMapping("/factura/create")
     public ResponseEntity<String> create (@RequestHeader String token, @RequestBody Factura factura){
         try{
-            Autentication autentication = autenticationService.validarToken(token);
+            Autentication autentication = authenticationService.validarToken(token);
             String respuesta = service.guardar(autentication.getUser(), factura);
             log.info("Producto creado de forma correcta {}", factura);
             return ResponseEntity.status(HttpStatus.CREATED).body(respuesta);
@@ -44,7 +43,7 @@ public class FacturaController {
     @PostMapping("/factura/createComplete")
     public ResponseEntity<String> createComplete (@RequestHeader String token, @RequestBody Factura factura){
         try{
-            Autentication autentication = autenticationService.validarToken(token);
+            Autentication autentication = authenticationService.validarToken(token);
             String respuesta = service.guardarFacturaCompleta(autentication.getUser(), factura);
             log.info("Producto creado de forma correcta {}", factura);
             return ResponseEntity.status(HttpStatus.CREATED).body(respuesta);
@@ -61,7 +60,7 @@ public class FacturaController {
     @GetMapping("/factura/getAll")
     public ResponseEntity<?> getAll(@RequestHeader String token){
         try{
-            autenticationService.validarToken(token);
+            authenticationService.validarToken(token);
             return ResponseEntity.ok(service.retornar());
         } catch (AuthenticationException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
