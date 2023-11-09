@@ -3,7 +3,7 @@ package org.ejemplo.servicios;
 import lombok.extern.slf4j.Slf4j;
 import org.ejemplo.exceptions.UserException;
 import org.ejemplo.exceptions.ValidationException;
-import org.ejemplo.modelos.Log;
+import org.ejemplo.modelos.dtos.LogDTO;
 import org.ejemplo.modelos.Login;
 import org.ejemplo.modelos.Usuario;
 import org.ejemplo.repository.UsuarioRepository;
@@ -23,7 +23,7 @@ public class UsersService {
     @Autowired
     UsuarioRepository usuarioRepository;
     @Autowired
-    AutenticationService autenticationService;
+    AuthenticationService authenticationService;
 
     public String guardarUsuario(Usuario usuario) throws ValidationException {
         validations.validateToCreate(retornarUsuarios(), usuario, null);
@@ -40,12 +40,16 @@ public class UsersService {
         usuarioRepository.deleteById(user);
     }
 
-    public Log login(Login login) throws UserException {
+    public Optional<Usuario> findByUser(String user){
+        return usuarioRepository.findById(user);
+    }
+
+    public LogDTO login(Login login) throws UserException {
         Optional<Usuario> optionalUsuario = usuarioRepository.findById(login.getUser());
         if (optionalUsuario.isPresent()){
             Usuario usuario = optionalUsuario.get();
             if (usuario.getPassword().equals(login.getPassword())){
-                return autenticationService.createToken(usuario);
+                return authenticationService.createToken(usuario);
             }
         }
         throw new UserException(HttpStatus.UNAUTHORIZED,"Login fallido", "Tus datos de inicio de session son invalidos");

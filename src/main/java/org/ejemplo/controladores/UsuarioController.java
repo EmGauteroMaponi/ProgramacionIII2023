@@ -1,12 +1,11 @@
 package org.ejemplo.controladores;
 
 import lombok.extern.slf4j.Slf4j;
-import org.apache.el.parser.Token;
 import org.ejemplo.exceptions.UserException;
-import org.ejemplo.modelos.Log;
+import org.ejemplo.modelos.dtos.LogDTO;
 import org.ejemplo.modelos.Login;
 import org.ejemplo.modelos.Usuario;
-import org.ejemplo.servicios.AutenticationService;
+import org.ejemplo.servicios.AuthenticationService;
 import org.ejemplo.servicios.UsersService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -14,7 +13,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.naming.AuthenticationException;
-import java.util.List;
 
 @RestController
 @Slf4j
@@ -22,7 +20,7 @@ public class UsuarioController {
     @Autowired
     public UsersService service;
     @Autowired
-    public AutenticationService autenticationService;
+    public AuthenticationService authenticationService;
 
     @PostMapping("/usuario/registry")
     public ResponseEntity<String> createUser(@RequestBody Usuario usuario){
@@ -42,7 +40,7 @@ public class UsuarioController {
     @GetMapping("/usuario/getAll")
     public ResponseEntity<?> getAll(@RequestHeader String token){
         try {
-            autenticationService.validarToken(token);
+            authenticationService.validarToken(token);
             return ResponseEntity.ok(service.retornarUsuarios());
         } catch (AuthenticationException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
@@ -50,11 +48,23 @@ public class UsuarioController {
     }
 
     @PostMapping("/usuario/login")
-    public ResponseEntity<Log> login(@RequestBody Login login) {
+    public ResponseEntity<LogDTO> login(@RequestBody Login login) {
         try {
             return ResponseEntity.ok(service.login(login));
         } catch (UserException e) {
             return ResponseEntity.status(e.getStatusCode()).body(null);
+        }
+    }
+
+    @PostMapping("/usuario/logout")
+    public ResponseEntity<String> login(@RequestHeader String token) {
+        try {
+            authenticationService.eliminarToken(token);
+            return ResponseEntity.ok("Se ha cerrado session de forma correcta");
+        } catch (AuthenticationException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
+        } catch (Exception e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Ups!!! Algo salio mal, nuestro desarrolladores estan trabajando para solucionarlo");
         }
     }
 }

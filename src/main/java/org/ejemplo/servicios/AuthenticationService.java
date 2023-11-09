@@ -1,7 +1,7 @@
 package org.ejemplo.servicios;
 
 import org.ejemplo.modelos.Autentication;
-import org.ejemplo.modelos.Log;
+import org.ejemplo.modelos.dtos.LogDTO;
 import org.ejemplo.modelos.Usuario;
 import org.ejemplo.repository.AutenticationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,11 +14,11 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Service
-public class AutenticationService {
+public class AuthenticationService {
 
     @Autowired
     private AutenticationRepository repository;
-    public Log createToken(Usuario usuario){
+    public LogDTO createToken(Usuario usuario){
         if (repository.existsById(usuario.getUser())){
             repository.deleteById(usuario.getUser());
         }
@@ -27,7 +27,7 @@ public class AutenticationService {
         autentication.setToken(usuario.getUser() + UUID.randomUUID());
         autentication.setVencimiento(getVencimiento());
         repository.save(autentication);
-        return new Log(usuario.getRole(), autentication.getToken());
+        return new LogDTO(usuario.getUser(), usuario.getRole(), autentication.getToken());
     }
 
     public Autentication validarToken(String token) throws AuthenticationException {
@@ -44,12 +44,21 @@ public class AutenticationService {
         return autentication;
     }
 
+    public void eliminarToken(String token) throws AuthenticationException {
+        Optional<Autentication> optionalAutentication = repository.findByToken(token);
+        if (optionalAutentication.isEmpty()){
+            throw new AuthenticationException("El token no existe");
+        }
+        Autentication autentication = optionalAutentication.get();
+        repository.deleteById(autentication.getUser());
+    }
+
 
 
     private Date getVencimiento(){
         Calendar c = Calendar.getInstance();
         c.setTime(new Date());
-        c.add(Calendar.MINUTE, 1);
+        c.add(Calendar.MINUTE, 15);
         return c.getTime();
     }
 }
