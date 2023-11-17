@@ -51,12 +51,11 @@ public class TareaService {
             throw new BalanceException(HttpStatus.PRECONDITION_FAILED, "No se puede actualizar la tarea", "Para modificar la tarea debe ingresar el usuario encargado" );
         }
         if (tarea.getEncargado() != null){
-            if ((tarea.getEncargado() != null && (tarea.getEncargado().getUser() == null || tarea.getEncargado().getUser().isBlank()))
-                    && !usuario.getRole().equalsIgnoreCase("administrador")  ){
+            if (tarea.getEncargado().getUser() == null || tarea.getEncargado().getUser().isBlank()){
                 throw new BalanceException(HttpStatus.PRECONDITION_FAILED, "No se puede actualizar la tarea", "Para modificar la tarea debe especificar el nombre de usuario del encargado" );
             }
             Optional<Usuario> encargadoOptional = usersService.findByUser(tarea.getEncargado().getUser());
-            if (encargadoOptional.isEmpty() && !usuario.getRole().equalsIgnoreCase("administrador")){
+            if (encargadoOptional.isEmpty()){
                 throw new BalanceException(HttpStatus.PRECONDITION_FAILED, "No se puede actualizar la tarea", "El encargado no se encuentra registrado en nuestro sistema");
             }
 
