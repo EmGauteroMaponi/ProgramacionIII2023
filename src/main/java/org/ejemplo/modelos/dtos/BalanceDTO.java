@@ -13,7 +13,7 @@ public class BalanceDTO {
     private Date desde;
     private Date hasta;
     private String nombre;
-    private List<Factura> facturas;
+    private List<FacturaDTO> facturas;
     private Double totalFacturado;
     private Integer cantidadDeProductosVendidos;
     private Map<String, Integer> facturasPorVendedor;

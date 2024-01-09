@@ -34,6 +34,13 @@ public class ProductoService {
         return saveProduct(producto);
     }
 
+    public Producto updateStock(String codigo, Integer cantidad){
+        Producto producto = productoRepository.findById(codigo).orElseThrow();
+        producto.setStock(producto.getStock()-cantidad);
+        saveProduct(producto);
+        return producto;
+    }
+
     public List<Producto> retornarProductos(){
         return productoRepository.findAll();
     }

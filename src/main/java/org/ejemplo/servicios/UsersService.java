@@ -45,9 +45,8 @@ public class UsersService {
     }
 
     public LogDTO login(Login login) throws UserException {
-        Optional<Usuario> optionalUsuario = usuarioRepository.findById(login.getUser());
-        if (optionalUsuario.isPresent()){
-            Usuario usuario = optionalUsuario.get();
+        if (usuarioRepository.findAll().stream().anyMatch(usuario -> usuario.getUser().equals(login.getUser()))){
+            Usuario usuario = usuarioRepository.findById(login.getUser()).get();
             if (usuario.getPassword().equals(login.getPassword())){
                 return authenticationService.createToken(usuario);
             }

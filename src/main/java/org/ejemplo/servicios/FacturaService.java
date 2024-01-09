@@ -1,20 +1,17 @@
 package org.ejemplo.servicios;
 
 import lombok.extern.slf4j.Slf4j;
-import org.ejemplo.exceptions.DetalleFacturaException;
 import org.ejemplo.exceptions.ValidationException;
 import org.ejemplo.modelos.DetalleFactura;
 import org.ejemplo.modelos.Factura;
+import org.ejemplo.modelos.dtos.FacturaDTO;
 import org.ejemplo.repository.FacturaRepository;
 import org.ejemplo.validations.FacturaValidations;
 import org.ejemplo.validations.ValidationsInterface;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -55,11 +52,11 @@ public class FacturaService {
         return "ok";
     }
 
-    public List<Factura> retornar(){
-        return facturaRepository.findAll();
+    public List<FacturaDTO> retornar(){
+        return facturaRepository.findAll().stream().map(f -> new FacturaDTO(f)).collect(Collectors.toList());
     }
 
-    public List<Factura> retornarDesdeHasta(Date desde, Date hasta){
+    public List<FacturaDTO> retornarDesdeHasta(Date desde, Date hasta){
         return retornar().stream().filter(factura -> factura.getFecha().after(desde) && factura.getFecha().before(hasta)).collect(Collectors.toList());
     }
 

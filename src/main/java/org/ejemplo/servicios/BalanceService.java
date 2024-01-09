@@ -3,9 +3,9 @@ package org.ejemplo.servicios;
 import org.ejemplo.exceptions.BalanceException;
 import org.ejemplo.modelos.Balance;
 import org.ejemplo.modelos.DetalleFactura;
-import org.ejemplo.modelos.Factura;
 import org.ejemplo.modelos.Usuario;
 import org.ejemplo.modelos.dtos.BalanceDTO;
+import org.ejemplo.modelos.dtos.FacturaDTO;
 import org.ejemplo.repository.BalanceRepository;
 import org.ejemplo.validations.BalanceValidations;
 import org.springframework.stereotype.Service;
@@ -30,7 +30,7 @@ public class BalanceService {
     public BalanceDTO generarBalance(Usuario usuario, Date desde, Date hasta) throws BalanceException {
         BalanceValidations.validarParaCrear(desde, hasta, usersService.retornarUsuarios(), usuario);
 
-        List<Factura> facturas = facturaService.retornarDesdeHasta(desde,hasta);
+        List<FacturaDTO> facturas = facturaService.retornarDesdeHasta(desde,hasta);
         String nombre = "from:".concat(desde.toString())
                 .concat(" to:")
                 .concat(hasta.toString())
@@ -53,9 +53,9 @@ public class BalanceService {
 
     }
 
-    private Map<String, Integer> productosCantidad(List<Factura> facturas){
+    private Map<String, Integer> productosCantidad(List<FacturaDTO> facturas){
         Map<String, Integer> productosCantidad = new HashMap<>();
-        for(Factura factura : facturas){
+        for(FacturaDTO factura : facturas){
             for (DetalleFactura detalleFactura: factura.getDetalles()){
                 String producto = detalleFactura.getProducto().getCodigo();
                 if (productosCantidad.containsKey(producto)){
@@ -77,9 +77,9 @@ public class BalanceService {
         return cantidad;
     }
 
-    private Map<String, Integer> facturasPorVendedor(List<Factura> facturas){
+    private Map<String, Integer> facturasPorVendedor(List<FacturaDTO> facturas){
         Map<String, Integer> facturasPorVendedor = new HashMap<>();
-        for(Factura factura : facturas){
+        for(FacturaDTO factura : facturas){
             String vendedor = factura.getVendedor().getUser();
             if (facturasPorVendedor.containsKey(vendedor)){
                 Integer cantidad = facturasPorVendedor.get(vendedor);
@@ -91,12 +91,10 @@ public class BalanceService {
         return facturasPorVendedor;
     }
 
-    private Double totalFacturas(List<Factura> facturas){
+    private Double totalFacturas(List<FacturaDTO> facturas){
         Double total = 0.0;
-        for (Factura factura: facturas){
-            for (DetalleFactura detalle : factura.getDetalles()){
-                total+= detalle.getPrecioTotal();
-            }
+        for (FacturaDTO factura: facturas){
+            total += factura.getTotal();
         }
         return total;
     }

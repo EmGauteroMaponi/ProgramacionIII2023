@@ -12,7 +12,7 @@ import java.util.Optional;
 public class DetalleFacturaValidations {
     public static boolean existDetalle(List<DetalleFactura> detalles, DetalleFactura detalle){
         for(DetalleFactura d: detalles){
-            if (d.getId().equals(detalle.getId())){
+            if (detalle.getId() != null && d.getId().equals(detalle.getId())){
                 return true;
             }
         }

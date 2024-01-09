@@ -21,10 +21,12 @@ public class DetalleFacturaService {
     DetalleFacturaRepository detalleFacturaRepository;
 
     ProductoRepository productoRepository;
+    ProductoService productoService;
 
-    DetalleFacturaService(DetalleFacturaRepository detalleFacturaRepository, ProductoRepository productoRepository){
+    DetalleFacturaService(DetalleFacturaRepository detalleFacturaRepository, ProductoRepository productoRepository, ProductoService productoService){
         this.detalleFacturaRepository = detalleFacturaRepository;
         this.productoRepository = productoRepository;
+        this.productoService = productoService;
     }
     public DetalleFactura guardar(DetalleFactura detalleFactura) throws DetalleFacturaException {
         DetalleFacturaValidations.validateForCreate(productoRepository,detalleFacturaRepository.findAll(), detalleFactura);
@@ -51,6 +53,7 @@ public class DetalleFacturaService {
         Double precio = optionalProducto.get().getPrecio();
         detalleFactura.setPrecioUnitario(precio);
         detalleFactura.setPrecioTotal(precio * detalleFactura.getCantidad());
+        productoService.updateStock(detalleFactura.getProducto().getCodigo(), detalleFactura.getCantidad());
         return detalleFacturaRepository.save(detalleFactura);
     }
 }
