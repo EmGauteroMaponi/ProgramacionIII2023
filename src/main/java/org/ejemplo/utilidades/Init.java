@@ -73,10 +73,10 @@ public class Init {
 
     private void crearProductos() throws ProductoException {
         if (productoService.retornarProductos().isEmpty()){
-            productoService.guardarProducto(coca1);
-            productoService.guardarProducto(coca15);
-            productoService.guardarProducto(coca2);
-            productoService.guardarProducto(coca25);
+            productoService.guardarProducto("Inicialización",coca1);
+            productoService.guardarProducto("Inicialización",coca15);
+            productoService.guardarProducto("Inicialización",coca2);
+            productoService.guardarProducto("Inicialización",coca25);
         }
     }
 

@@ -2,6 +2,7 @@ package org.ejemplo.controladores;
 
 import lombok.extern.slf4j.Slf4j;
 import org.ejemplo.exceptions.ProductoException;
+import org.ejemplo.modelos.Autentication;
 import org.ejemplo.modelos.Producto;
 import org.ejemplo.servicios.AuthenticationService;
 import org.ejemplo.servicios.ProductoService;
@@ -23,8 +24,8 @@ public class ProductoController {
     @PostMapping("/producto/create")
     public ResponseEntity<String> createProducto(@RequestHeader String token, @RequestBody Producto producto){
         try{
-            authenticationService.validarToken(token);
-            String respuesta = service.guardarProducto (producto);
+            Autentication autentication = authenticationService.validarToken(token);
+            String respuesta = service.guardarProducto (autentication.getUser(),producto);
             log.info("Producto creado de forma correcta {}", producto.getCodigo());
             return ResponseEntity.status(HttpStatus.CREATED).body(respuesta);
         }  catch (AuthenticationException e) {
@@ -50,8 +51,8 @@ public class ProductoController {
     @PostMapping("/producto/update")
     public ResponseEntity<String> updateProducto(@RequestHeader String token, @RequestBody Producto producto){
         try{
-            authenticationService.validarToken(token);
-            String respuesta = service.actualizarProducto (producto);
+            Autentication autentication = authenticationService.validarToken(token);
+            String respuesta = service.actualizarProducto (autentication.getUser(),producto);
             log.info("Producto creado de forma correcta {}", producto.getCodigo());
             return ResponseEntity.status(HttpStatus.OK).body(respuesta);
         } catch (AuthenticationException e) {
@@ -67,7 +68,7 @@ public class ProductoController {
     @DeleteMapping("/producto/delete/{codigo}")
     public ResponseEntity<String> deleteProducto(@RequestHeader String token,@PathVariable(value = "codigo") String codigo){
         try{
-            authenticationService.validarToken(token);
+            Autentication autentication = authenticationService.validarToken(token);
             service.borrarProductos (codigo);
             log.info("Producto borrado de forma correcta {}", codigo);
             return ResponseEntity.status(HttpStatus.OK).body("Producto Borraddo de Forma Correcta");

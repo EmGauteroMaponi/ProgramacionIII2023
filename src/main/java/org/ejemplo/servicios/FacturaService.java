@@ -46,7 +46,7 @@ public class FacturaService {
         additionalData.put("usuarios", usersService.retornarUsuarios());
         validations.validateToCreate(facturaRepository.findAll(), factura, additionalData);
         for (DetalleFactura detalle: factura.getDetalles()){
-            detalleFacturaService.guardar(detalle);
+            detalleFacturaService.guardar(user, detalle);
         }
         facturaRepository.save(factura);
         return "ok";

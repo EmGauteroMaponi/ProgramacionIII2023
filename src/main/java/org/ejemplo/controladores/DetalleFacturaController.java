@@ -2,7 +2,9 @@ package org.ejemplo.controladores;
 
 import lombok.extern.slf4j.Slf4j;
 import org.ejemplo.exceptions.DetalleFacturaException;
+import org.ejemplo.modelos.Autentication;
 import org.ejemplo.modelos.DetalleFactura;
+import org.ejemplo.servicios.AuthenticationService;
 import org.ejemplo.servicios.DetalleFacturaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -16,11 +18,13 @@ import java.util.List;
 public class DetalleFacturaController {
     @Autowired
     public DetalleFacturaService service;
+    private AuthenticationService authenticationService;
 
     @PostMapping("/detalleFactura/create")
-    public ResponseEntity<?> createProducto(@RequestBody DetalleFactura detalleFactura){
+    public ResponseEntity<?> createProducto(@RequestHeader String token,@RequestBody DetalleFactura detalleFactura){
         try{
-            DetalleFactura respuesta = service.guardar (detalleFactura);
+            Autentication autentication = authenticationService.validarToken(token);
+            DetalleFactura respuesta = service.guardar (autentication.getUser(), detalleFactura);
             log.info("Producto creado de forma correcta {}", detalleFactura.getId());
             return ResponseEntity.status(HttpStatus.CREATED).body(respuesta);
         } catch (DetalleFacturaException e){
@@ -38,9 +42,10 @@ public class DetalleFacturaController {
     }
 
     @PostMapping("/detalleFactura/update")
-    public ResponseEntity<?> updateProducto(@RequestBody DetalleFactura detalleFactura){
+    public ResponseEntity<?> updateProducto(@RequestHeader String token,@RequestBody DetalleFactura detalleFactura){
         try{
-            DetalleFactura respuesta = service.actualizar (detalleFactura);
+            Autentication autentication = authenticationService.validarToken(token);
+            DetalleFactura respuesta = service.actualizar (autentication.getUser(), detalleFactura);
             log.info("Producto creado de forma correcta {}", detalleFactura.getId());
             return ResponseEntity.status(HttpStatus.OK).body(respuesta);
         } catch (DetalleFacturaException e){

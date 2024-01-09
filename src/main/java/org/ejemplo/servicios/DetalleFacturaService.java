@@ -28,16 +28,16 @@ public class DetalleFacturaService {
         this.productoRepository = productoRepository;
         this.productoService = productoService;
     }
-    public DetalleFactura guardar(DetalleFactura detalleFactura) throws DetalleFacturaException {
+    public DetalleFactura guardar(String user, DetalleFactura detalleFactura) throws DetalleFacturaException {
         DetalleFacturaValidations.validateForCreate(productoRepository,detalleFacturaRepository.findAll(), detalleFactura);
 
-        return saveDetalle(detalleFactura);
+        return saveDetalle(user, detalleFactura);
     }
 
 
-    public DetalleFactura actualizar(DetalleFactura detalleFactura) throws DetalleFacturaException {
+    public DetalleFactura actualizar(String user, DetalleFactura detalleFactura) throws DetalleFacturaException {
         DetalleFacturaValidations.validateForUpdate(productoRepository, detalleFacturaRepository.findAll(), detalleFactura);
-        return saveDetalle(detalleFactura);
+        return saveDetalle(user, detalleFactura);
     }
 
     public List<DetalleFactura> retornar(){
@@ -48,12 +48,12 @@ public class DetalleFacturaService {
         detalleFacturaRepository.deleteById(id);
     }
 
-    private DetalleFactura saveDetalle(DetalleFactura detalleFactura) {
+    private DetalleFactura saveDetalle(String user, DetalleFactura detalleFactura) {
         Optional<Producto> optionalProducto = productoRepository.findById(detalleFactura.getProducto().getCodigo());
         Double precio = optionalProducto.get().getPrecio();
         detalleFactura.setPrecioUnitario(precio);
         detalleFactura.setPrecioTotal(precio * detalleFactura.getCantidad());
-        productoService.updateStock(detalleFactura.getProducto().getCodigo(), detalleFactura.getCantidad());
+        productoService.updateStock(user, detalleFactura.getProducto().getCodigo(), detalleFactura.getCantidad());
         return detalleFacturaRepository.save(detalleFactura);
     }
 }

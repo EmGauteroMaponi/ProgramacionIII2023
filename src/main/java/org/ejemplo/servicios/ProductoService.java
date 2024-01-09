@@ -1,5 +1,7 @@
 package org.ejemplo.servicios;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.ejemplo.exceptions.ProductoException;
 import org.ejemplo.exceptions.UserException;
@@ -21,23 +23,28 @@ import java.util.Optional;
 @Service
 @Slf4j
 public class ProductoService {
+    private static final String REGISTRO_CREAR_PRODUCTO = "Se registro el producto %s";
+    private static final String REGISTRO_ACTUALIZAR_PRODUCTO = "Se actualiza el producto %s";
+    private static final String REGISTRO_ACTUALIZAR_STOCK_PRODUCTO = "Nuevo consumo en el producto %s con la cantidad %d";
     @Autowired
     ProductoRepository productoRepository;
+    @Autowired
+    RegistroService registroService;
 
-    public String guardarProducto(Producto producto) throws ProductoException {
+    public String guardarProducto(String user, Producto producto) throws ProductoException {
         ProductoValidations.validateProductoForCreate(productoRepository.findAll(), producto);
-        return saveProduct(producto);
+        return saveProduct(producto, user, String.format(REGISTRO_CREAR_PRODUCTO, producto.getCodigo()));
     }
 
-    public String actualizarProducto(Producto producto) throws ProductoException {
+    public String actualizarProducto(String user, Producto producto) throws ProductoException {
         ProductoValidations.validateProductoForUpdate(productoRepository.findAll(), producto);
-        return saveProduct(producto);
+        return saveProduct(producto, user, String.format(REGISTRO_ACTUALIZAR_PRODUCTO,producto.getCodigo()));
     }
 
-    public Producto updateStock(String codigo, Integer cantidad){
+    public Producto updateStock(String user, String codigo, Integer cantidad){
         Producto producto = productoRepository.findById(codigo).orElseThrow();
         producto.setStock(producto.getStock()-cantidad);
-        saveProduct(producto);
+        saveProduct(producto, user, String.format(REGISTRO_ACTUALIZAR_STOCK_PRODUCTO, codigo, cantidad));
         return producto;
     }
 
@@ -55,9 +62,10 @@ public class ProductoService {
     }
 
 
-    private String saveProduct(Producto producto) {
+    private String saveProduct(Producto producto,String user, String accion) {
         producto.setFechaDeActualizacion(new Date());
         productoRepository.save(producto);
+        registroService.registrar(accion, user, (new Date()).toString(), new ObjectMapper().convertValue(producto, new TypeReference<>() {}));
         return "producto cargado correctamente";
     }
 }

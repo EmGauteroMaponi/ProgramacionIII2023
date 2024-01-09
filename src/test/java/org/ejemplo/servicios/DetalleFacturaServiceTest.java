@@ -25,6 +25,7 @@ public class DetalleFacturaServiceTest {
     public void testCrearDetalleCorrecto() {
         DetalleFacturaRepository detalleFacturaRepository = Mockito.mock(DetalleFacturaRepository.class);
         ProductoRepository productoRepository = Mockito.mock(ProductoRepository.class);
+        ProductoService productoService = Mockito.mock(ProductoService.class);
 
         Producto prod = new Producto("codigo", "nombre", "descrip", new Date(), 15, 1500.0);
         DetalleFactura df = new DetalleFactura();
@@ -36,9 +37,9 @@ public class DetalleFacturaServiceTest {
         Mockito.when(detalleFacturaRepository.findAll()).thenReturn(List.of());
         Mockito.when(productoRepository.findById("codigo")).thenReturn(Optional.of(prod));
 
-        DetalleFacturaService dtf = new DetalleFacturaService(detalleFacturaRepository, productoRepository);
+        DetalleFacturaService dtf = new DetalleFacturaService(detalleFacturaRepository, productoRepository, productoService);
 
-        assertDoesNotThrow(() -> dtf.guardar(df));
+        assertDoesNotThrow(() -> dtf.guardar("user",df));
 
         assertEquals(22500.0, df.getPrecioTotal());
         assertEquals(1500.0, df.getPrecioUnitario());
@@ -50,6 +51,7 @@ public class DetalleFacturaServiceTest {
     public void testCrearDetalleConError() {
         DetalleFacturaRepository detalleFacturaRepository = Mockito.mock(DetalleFacturaRepository.class);
         ProductoRepository productoRepository = Mockito.mock(ProductoRepository.class);
+        ProductoService productoService = Mockito.mock(ProductoService.class);
 
         Producto prod = new Producto("codigo", "nombre", "descrip", new Date(), 15, 1500.0);
         DetalleFactura df = new DetalleFactura();
@@ -60,10 +62,10 @@ public class DetalleFacturaServiceTest {
         Mockito.when(detalleFacturaRepository.findAll()).thenReturn(List.of());
         Mockito.when(productoRepository.findById("codigo")).thenReturn(Optional.of(prod));
 
-        DetalleFacturaService dtf = new DetalleFacturaService(detalleFacturaRepository, productoRepository);
+        DetalleFacturaService dtf = new DetalleFacturaService(detalleFacturaRepository, productoRepository, productoService);
 
         ClientException exception = assertThrows(ClientException.class, () -> {
-            dtf.guardar(df);
+            dtf.guardar("user", df);
         });
         assertEquals(HttpStatus.PRECONDITION_FAILED, exception.getStatusCode());
         assertEquals("No se puede ingresar el Detalle ", exception.getMessage());
