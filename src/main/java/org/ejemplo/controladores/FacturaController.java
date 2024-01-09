@@ -24,7 +24,7 @@ public class FacturaController {
 
 
     @PostMapping("/factura/create")
-    public ResponseEntity<String> create (@RequestHeader String token, @RequestBody Factura factura){
+    public ResponseEntity<String> create (@RequestHeader(value = "token") String token, @RequestBody Factura factura){
         try{
             Autentication autentication = authenticationService.validarToken(token);
             String respuesta = service.guardar(autentication.getUser(), factura);
@@ -41,7 +41,7 @@ public class FacturaController {
     }
 
     @PostMapping("/factura/createComplete")
-    public ResponseEntity<String> createComplete (@RequestHeader String token, @RequestBody Factura factura){
+    public ResponseEntity<String> createComplete (@RequestHeader(value = "token") String token, @RequestBody Factura factura){
         try{
             Autentication autentication = authenticationService.validarToken(token);
             String respuesta = service.guardarFacturaCompleta(autentication.getUser(), factura);
@@ -58,7 +58,7 @@ public class FacturaController {
     }
 
     @GetMapping("/factura/getAll")
-    public ResponseEntity<?> getAll(@RequestHeader String token){
+    public ResponseEntity<?> getAll(@RequestHeader(value = "token") String token){
         try{
             authenticationService.validarToken(token);
             return ResponseEntity.ok(service.retornar());

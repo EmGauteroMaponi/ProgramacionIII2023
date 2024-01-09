@@ -6,6 +6,7 @@ import org.ejemplo.exceptions.ValidationException;
 import org.ejemplo.modelos.dtos.LogDTO;
 import org.ejemplo.modelos.Login;
 import org.ejemplo.modelos.Usuario;
+import org.ejemplo.modelos.dtos.UsuarioDTO;
 import org.ejemplo.repository.UsuarioRepository;
 import org.ejemplo.validations.UserValidations;
 import org.ejemplo.validations.ValidationsInterface;
@@ -13,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import javax.swing.text.html.Option;
 import java.util.List;
 import java.util.Optional;
 
@@ -42,6 +44,9 @@ public class UsersService {
 
     public Optional<Usuario> findByUser(String user){
         return usuarioRepository.findById(user);
+    }
+    public Optional<UsuarioDTO> getByUser(String user){
+        return usuarioRepository.existsById(user) ? Optional.of(new UsuarioDTO(findByUser(user).orElseThrow())): Optional.empty();
     }
 
     public LogDTO login(Login login) throws UserException {

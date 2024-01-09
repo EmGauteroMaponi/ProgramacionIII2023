@@ -21,7 +21,7 @@ public class ClienteController {
     public ClienteService service;
 
     @PostMapping("/cliente/registry")
-    public ResponseEntity<String> createUser(@RequestHeader String token, @RequestBody Cliente cliente){
+    public ResponseEntity<String> createUser(@RequestHeader(value = "token") String token, @RequestBody Cliente cliente){
         try{
             authenticationService.validarToken(token);
             String respuesta = service.guardarCliente(cliente);
@@ -39,7 +39,7 @@ public class ClienteController {
     }
 
     @GetMapping("/cliente/getAll")
-    public ResponseEntity<?> getAll(@RequestHeader String token){
+    public ResponseEntity<?> getAll(@RequestHeader(value = "token") String token){
         try {
             authenticationService.validarToken(token);
             return ResponseEntity.ok(service.retornarUsuarios());
@@ -48,7 +48,7 @@ public class ClienteController {
         }
     }
     @GetMapping("/cliente/findById/{id}")
-    public ResponseEntity<?> getAll(@RequestHeader String token,@PathVariable(value = "id") Integer id){
+    public ResponseEntity<?> getAll(@RequestHeader(value = "token") String token,@PathVariable(value = "id") Integer id){
         try {
             authenticationService.validarToken(token);
             return ResponseEntity.ok(service.findById(id));
@@ -58,7 +58,7 @@ public class ClienteController {
     }
 
     @DeleteMapping("/cliente/{id}")
-    public ResponseEntity<String> delete(@RequestHeader String token,@PathVariable(value = "id") Integer id){
+    public ResponseEntity<String> delete(@RequestHeader(value = "token") String token,@PathVariable(value = "id") Integer id){
         try {
             authenticationService.validarToken(token);
             service.borrarUsuarios(id);

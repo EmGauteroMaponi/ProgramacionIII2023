@@ -21,7 +21,7 @@ public class DetalleFacturaController {
     private AuthenticationService authenticationService;
 
     @PostMapping("/detalleFactura/create")
-    public ResponseEntity<?> createProducto(@RequestHeader String token,@RequestBody DetalleFactura detalleFactura){
+    public ResponseEntity<?> createProducto(@RequestHeader(value = "token") String token,@RequestBody DetalleFactura detalleFactura){
         try{
             Autentication autentication = authenticationService.validarToken(token);
             DetalleFactura respuesta = service.guardar (autentication.getUser(), detalleFactura);
@@ -42,7 +42,7 @@ public class DetalleFacturaController {
     }
 
     @PostMapping("/detalleFactura/update")
-    public ResponseEntity<?> updateProducto(@RequestHeader String token,@RequestBody DetalleFactura detalleFactura){
+    public ResponseEntity<?> updateProducto(@RequestHeader(value = "token") String token,@RequestBody DetalleFactura detalleFactura){
         try{
             Autentication autentication = authenticationService.validarToken(token);
             DetalleFactura respuesta = service.actualizar (autentication.getUser(), detalleFactura);

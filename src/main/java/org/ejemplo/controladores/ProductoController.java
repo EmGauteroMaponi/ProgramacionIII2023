@@ -22,7 +22,7 @@ public class ProductoController {
     private ProductoService service;
 
     @PostMapping("/producto/create")
-    public ResponseEntity<String> createProducto(@RequestHeader String token, @RequestBody Producto producto){
+    public ResponseEntity<String> createProducto(@RequestHeader(value = "token") String token, @RequestBody Producto producto){
         try{
             Autentication autentication = authenticationService.validarToken(token);
             String respuesta = service.guardarProducto (autentication.getUser(),producto);
@@ -40,7 +40,7 @@ public class ProductoController {
     }
 
     @GetMapping("/producto/getAll")
-    public ResponseEntity<?> getAllProducts(@RequestHeader String token){
+    public ResponseEntity<?> getAllProducts(@RequestHeader(value = "token") String token){
         try {
             authenticationService.validarToken(token);
             return ResponseEntity.ok(service.retornarProductos());
@@ -49,7 +49,7 @@ public class ProductoController {
         }
     }
     @PostMapping("/producto/update")
-    public ResponseEntity<String> updateProducto(@RequestHeader String token, @RequestBody Producto producto){
+    public ResponseEntity<String> updateProducto(@RequestHeader(value = "token") String token, @RequestBody Producto producto){
         try{
             Autentication autentication = authenticationService.validarToken(token);
             String respuesta = service.actualizarProducto (autentication.getUser(),producto);
@@ -66,7 +66,7 @@ public class ProductoController {
         }
     }
     @DeleteMapping("/producto/delete/{codigo}")
-    public ResponseEntity<String> deleteProducto(@RequestHeader String token,@PathVariable(value = "codigo") String codigo){
+    public ResponseEntity<String> deleteProducto(@RequestHeader(value = "token") String token,@PathVariable(value = "codigo") String codigo){
         try{
             Autentication autentication = authenticationService.validarToken(token);
             service.borrarProductos (codigo);
@@ -84,7 +84,7 @@ public class ProductoController {
     }
 
     @GetMapping("/producto/find/{codigo}")
-    public ResponseEntity<?> findProducto(@RequestHeader String token,@PathVariable(value = "codigo") String codigo){
+    public ResponseEntity<?> findProducto(@RequestHeader(value = "token") String token,@PathVariable(value = "codigo") String codigo){
         try{
             authenticationService.validarToken(token);
             return ResponseEntity.status(HttpStatus.OK).body(service.findProducto(codigo));

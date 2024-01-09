@@ -57,7 +57,7 @@ public class UsuarioController {
     }
 
     @PostMapping("/usuario/logout")
-    public ResponseEntity<String> login(@RequestHeader String token) {
+    public ResponseEntity<String> login(@RequestHeader(value = "token") String token) {
         try {
             authenticationService.eliminarToken(token);
             return ResponseEntity.ok("Se ha cerrado session de forma correcta");
