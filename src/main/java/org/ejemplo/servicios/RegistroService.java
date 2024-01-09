@@ -17,12 +17,15 @@ import java.util.stream.Collectors;
 public class RegistroService {
     @Autowired
     private RegistroRepository repository;
+
+    @Autowired
+    private FacturaService facturaService;
     @Autowired
     private RegistroDtoMapper mapper;
 
     public void registrar(String accion, String usuario, String detalle, Object object){
         Gson gson = new Gson();
-        String json = object!=null ? gson.toJson(object):null;
+        String json = object!=null ? new Gson().toJson(object):null;
         Registro registro = new Registro();
         registro.setId(UUID.randomUUID().toString());
         registro.setAccion(accion);
