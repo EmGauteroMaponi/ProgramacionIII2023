@@ -38,7 +38,7 @@ public class UsuarioController {
     }
 
     @GetMapping("/usuario/getAll")
-    public ResponseEntity<?> getAll(@RequestHeader String token){
+    public ResponseEntity<?> getAll(@RequestHeader(value = "token") String token){
         try {
             authenticationService.validarToken(token);
             return ResponseEntity.ok(service.retornarUsuarios());

@@ -19,8 +19,6 @@ public class RegistroService {
     private RegistroRepository repository;
 
     @Autowired
-    private FacturaService facturaService;
-    @Autowired
     private RegistroDtoMapper mapper;
 
     public void registrar(String accion, String usuario, String detalle, Object object){
