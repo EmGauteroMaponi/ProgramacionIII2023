@@ -1,5 +1,7 @@
 package org.ejemplo.servicios;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.ejemplo.exceptions.ValidationException;
 import org.ejemplo.modelos.DetalleFactura;
@@ -28,6 +30,8 @@ public class FacturaService {
 
     @Autowired
     private DetalleFacturaService detalleFacturaService;
+    @Autowired
+    RegistroService registroService;
 
     public String guardar(String user, Factura factura) throws ValidationException {
         Map<String, List> additionalData = new HashMap<>();
@@ -36,6 +40,13 @@ public class FacturaService {
         additionalData.put("usuarios", usersService.retornarUsuarios());
         validations.validateToCreate(facturaRepository.findAll(), factura, additionalData);
         facturaRepository.save(factura);
+
+        String fecha = (new Date()).toString();
+        Map registroFactura = Map.of("id", factura.getId()
+                ,"numero", factura.getNro1() + "-"+ factura.getNro2(),
+                "fecha", factura.getFecha(), "vendedor", factura.getVendedor().getUser(), "comprador", factura.getComprador().getId());
+        registroService.registrar("se guardo una nueva factura con id: "+factura.getId(), user, fecha, new ObjectMapper().convertValue(registroFactura, new TypeReference<>() {}));
+
         return "ok";
     }
 
@@ -48,7 +59,15 @@ public class FacturaService {
         for (DetalleFactura detalle: factura.getDetalles()){
             detalleFacturaService.guardar(user, detalle);
         }
-        facturaRepository.save(factura);
+        factura = facturaRepository.save(factura);
+
+        String fecha = (new Date()).toString();
+
+        Map registroFactura = Map.of("id", factura.getId()
+        ,"numero", factura.getNro1() + "-"+ factura.getNro2(),
+                "fecha", factura.getFecha(), "vendedor", factura.getVendedor().getUser(), "comprador", factura.getComprador().getId());
+        registroService.registrar("se guardo una nueva factura completa con id: "+factura.getId(), user, fecha, new ObjectMapper().convertValue(registroFactura, new TypeReference<>() {}));
+
         return "ok";
     }
 

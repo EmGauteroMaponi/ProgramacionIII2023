@@ -18,6 +18,7 @@ import java.util.List;
 public class DetalleFacturaController {
     @Autowired
     public DetalleFacturaService service;
+    @Autowired
     private AuthenticationService authenticationService;
 
     @PostMapping("/detalleFactura/create")
