@@ -19,7 +19,7 @@ public class SueldoValidations {
             throw new SueldoException(HttpStatus.PRECONDITION_FAILED, "Error en el campo Usuario", "El usuario no puede ser nulo");
         }
         if (sueldoRepetido) {
-            throw new SueldoException(HttpStatus.PRECONDITION_FAILED, "Error en el campo Usuario", "El usuario no puede ser nulo");
+            throw new SueldoException(HttpStatus.PRECONDITION_FAILED, "El usuario ya tiene sueldo", "Solo puede existir un sueldo por usuario");
         }
         if (optionalUser.isEmpty()){
             throw new SueldoException(HttpStatus.PRECONDITION_FAILED, "El usuario no existe", "Necesita tener un usuario existente para crear un sueldo");
@@ -38,17 +38,6 @@ public class SueldoValidations {
         }
         if (sueldo.getRevisionPerformance() == null) {
             throw new SueldoException(HttpStatus.PRECONDITION_FAILED, "Error en el campo Revisión de Performance", "La revisión de performance no puede ser nula");
-        }
-        boolean isValidPerformance = false;
-        for (Sueldo.RevisionPerformance rp : Sueldo.RevisionPerformance.values()) {
-            if (rp == sueldo.getRevisionPerformance()) {
-                isValidPerformance = true;
-                break;
-            }
-        }
-
-        if (!isValidPerformance) {
-            throw new SueldoException(HttpStatus.PRECONDITION_FAILED, "Error en el campo Revisión de Performance", "La revisión de performance solo puede contener los estados: PENDIENTE, EN_PROCESO, COMPLETADO");
         }
 
     }
