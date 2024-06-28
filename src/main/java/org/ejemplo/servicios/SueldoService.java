@@ -9,6 +9,7 @@ import org.ejemplo.modelos.Usuario;
 import org.ejemplo.modelos.dtos.UsuarioDTO;
 import org.ejemplo.repository.SueldoRepository;
 import org.ejemplo.repository.UsuarioRepository;
+import org.ejemplo.validations.ClienteValidations;
 import org.ejemplo.validations.ProductoValidations;
 import org.ejemplo.validations.SueldoValidations;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,15 +34,16 @@ public class SueldoService {
         Optional<UsuarioDTO> usuario = usersService.getByUser(sueldo.getUsuario().getUser());
         Boolean sueldoRepetido = sueldoRepository.existsByUser(sueldo.getUsuario());
         sueldoValidations.validateSueldoForCreate(sueldo, usuario, sueldoRepetido, administrador);
-        sueldo.setRevisionPerformance(Sueldo.RevisionPerformance.valueOf("COMPLETADO"));
+        sueldo.setRevisionPerformance(sueldo.getRevisionPerformance().valueOf("COMPLETADO"));
         sueldo.setFechaDeActualizacion(new Date());
         sueldo.setId(sueldo.getUsuario().getUser());
         return sueldoRepository.save(sueldo);
     }
 
-    public String validateSueldoForUpdate(Sueldo sueldo) throws SueldoException {
+    public String actualizarSueldo(Sueldo sueldo) throws SueldoException {
         SueldoValidations.validateSueldoForUpdate(sueldoRepository.findAll(), sueldo);
-        return
+        sueldoRepository.save(sueldo);
+        return "Sueldo actualizado correctamente";
     }
 
     public Optional<Usuario> findByUser(String user){

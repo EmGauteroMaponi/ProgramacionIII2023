@@ -41,7 +41,7 @@ public class SueldoValidations {
         }
 
     }
-    public void validateSueldoForUpdate (Sueldo sueldo, Usuario usuario, Usuario administrador) throws SueldoException{
+    public static void validateSueldoForUpdate(Sueldo sueldo, Usuario usuario, Usuario administrador) throws SueldoException{
 
         if (!administrador.getRole().equals("ADMINISTRADOR")) {
             throw new SueldoException(HttpStatus.PRECONDITION_FAILED, "No tiene permisos para actualizar el sueldo", "Solo los administradores pueden actualizar sueldos");
