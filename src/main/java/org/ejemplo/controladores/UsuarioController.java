@@ -41,7 +41,7 @@ public class UsuarioController {
     public ResponseEntity<?> getAll(@RequestHeader(value = "token") String token){
         try {
             authenticationService.validarToken(token);
-            return ResponseEntity.ok(service.retornarUsuarios());
+            return ResponseEntity.ok(service.getUsuariosDTO());
         } catch (AuthenticationException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
         }

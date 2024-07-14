@@ -15,8 +15,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import javax.swing.text.html.Option;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -35,6 +37,18 @@ public class UsersService {
 
     public List<Usuario> retornarUsuarios(){
         return usuarioRepository.findAll();
+    }
+
+
+    public List<UsuarioDTO> getUsuariosDTO(){
+        List<UsuarioDTO> usuarioDTOS = new ArrayList<>();
+
+        for (Usuario uss: retornarUsuarios()){
+            usuarioDTOS.add(new UsuarioDTO(uss));
+        }
+        return usuarioDTOS;
+
+//        return retornarUsuarios().stream().map(UsuarioDTO::new).collect(Collectors.toList());
     }
 
     public void borrarUsuarios(String user) throws ValidationException {
